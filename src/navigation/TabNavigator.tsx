@@ -9,9 +9,10 @@ import { useTheme } from '../contexts/ThemeContext';
 
 const Tab = createBottomTabNavigator();
 
-export default function TabNavigator() {
+export default function TabNavigator({ route }: any) {
   const { colors } = useTheme();
-
+  const { email } = route.params;
+  
   return (
     <Tab.Navigator
       screenOptions={{
@@ -30,18 +31,19 @@ export default function TabNavigator() {
       }}
     >
       <Tab.Screen
-        name="Inicio"
-        component={HomeScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons
-              name="home"
-              size={size}
-              color={color}
-            />
-          ),
-        }}
+  name="Inicio"
+  options={{
+    tabBarIcon: ({ color, size }) => (
+      <Ionicons
+        name="home"
+        size={size}
+        color={color}
       />
+    ),
+  }}
+>
+  {() => <HomeScreen email={email} />}
+</Tab.Screen>
 
       <Tab.Screen
         name="Alumnos"

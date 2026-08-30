@@ -4,6 +4,8 @@ import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen';
 import StudentsScreen from '../screens/StudentsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+
 
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -58,6 +60,22 @@ export default function TabNavigator({ route }: any) {
           ),
         }}
       />
+
+      <Tab.Screen
+  name="Perfil"
+  options={{
+    tabBarIcon: ({ color, size }) => (
+      <Ionicons name="person" size={size} color={color} />
+    ),
+  }}
+>
+  {({ navigation }) => (
+    <ProfileScreen
+      navigation={navigation}
+      email={email}
+    />
+  )}
+</Tab.Screen>
 
       <Tab.Screen
         name="Configuración"

@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 type Props = {
+  label?: string;
   placeholder: string;
   value: string;
   onChangeText: (text: string) => void;
@@ -16,6 +17,7 @@ type Props = {
 };
 
 export default function CustomInput({
+  label,
   placeholder,
   value,
   onChangeText,
@@ -39,6 +41,12 @@ export default function CustomInput({
 
   return (
     <View style={styles.wrapper}>
+      {label && (
+        <Text style={styles.label}>
+          {label}
+        </Text>
+      )}
+
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -67,6 +75,13 @@ export default function CustomInput({
 const styles = StyleSheet.create({
   wrapper: {
     marginBottom: 10,
+  },
+
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 6,
+    color: '#334155',
   },
 
   inputContainer: {

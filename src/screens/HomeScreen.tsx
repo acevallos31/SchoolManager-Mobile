@@ -10,7 +10,11 @@ import {
 import { useTheme } from '../contexts/ThemeContext';
 import InfoCard from '../components/InfoCard';
 
-export default function HomeScreen() {
+type HomeScreenProps = {
+  email: string;
+};
+
+export default function HomeScreen({ email }: HomeScreenProps) {
   const { colors } = useTheme();
 
   return (
@@ -27,6 +31,24 @@ export default function HomeScreen() {
           resizeMode="contain"
         />
       </View>
+
+      <Text
+        style={[
+          styles.welcome,
+          { color: colors.text },
+        ]}
+      >
+        Bienvenido
+      </Text>
+
+      <Text
+        style={[
+          styles.email,
+          { color: colors.textSecondary },
+        ]}
+      >
+        {email}
+      </Text>
 
       <Text
         style={[
@@ -115,6 +137,17 @@ const styles = StyleSheet.create({
   logo: {
     width: Dimensions.get('window').width * 0.5,
     height: Dimensions.get('window').width * 0.5,
+  },
+
+  welcome: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginTop: 5,
+  },
+
+  email: {
+    fontSize: 15,
+    marginBottom: 15,
   },
 
   title: {

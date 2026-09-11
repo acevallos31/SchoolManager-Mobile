@@ -9,13 +9,13 @@ import {
 
 import { useTheme } from '../contexts/ThemeContext';
 import InfoCard from '../components/InfoCard';
+import { useAppSelector } from '../store/hooks';
 
-type HomeScreenProps = {
-  email: string;
-};
 
-export default function HomeScreen({ email }: HomeScreenProps) {
+export default function HomeScreen() {
   const { colors } = useTheme();
+
+  const user = useAppSelector((state) => state.user);
 
   return (
     <ScrollView
@@ -47,7 +47,7 @@ export default function HomeScreen({ email }: HomeScreenProps) {
           { color: colors.textSecondary },
         ]}
       >
-        {email}
+        {user.email}
       </Text>
 
       <Text

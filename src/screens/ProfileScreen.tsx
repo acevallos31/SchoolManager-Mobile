@@ -9,25 +9,25 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { useTheme } from '../contexts/ThemeContext';
 import CustomButton from '../components/CustomButton';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { clearUser } from '../store/slices/userSlice';
 
 type Props = {
   navigation: any;
-  name?: string;
-  email?: string;
-  role?: string;
-  school?: string;
 };
 
 export default function ProfileScreen({
   navigation,
-  name,
-  email,
-  role,
-  school,
 }: Props) {
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user);
   const { colors } = useTheme();
 
   const handleLogout = () => {
+    dispatch(clearUser());
+
+    console.log('Usuario eliminado de Redux');
+
     navigation.getParent()?.reset({
       index: 0,
       routes: [{ name: 'Login' }],
@@ -35,143 +35,143 @@ export default function ProfileScreen({
   };
 
   return (
-   <ScrollView
-    style={[
-    styles.container,
-    { backgroundColor: colors.background },
-     ]}
+    <ScrollView
+      style={[
+        styles.container,
+        { backgroundColor: colors.background },
+      ]}
     >
-    <Text
-    style={[
-    styles.title,
-      { color: colors.text },
+      <Text
+        style={[
+          styles.title,
+          { color: colors.text },
         ]}
       >
-     Perfil
-    </Text>
+        Perfil
+      </Text>
 
-    <Text
-    style={[
-    styles.subtitle,
-    { color: colors.textSecondary },
+      <Text
+        style={[
+          styles.subtitle,
+          { color: colors.textSecondary },
         ]}
       >
-    Información del usuario
-    </Text>
+        Información del usuario
+      </Text>
 
-    <View
-    style={[
-    styles.profileCard,
-    {
-    backgroundColor: colors.cardBackground,
-    borderColor: colors.cardBorder,
-    },
-    ]}
-    >
-   <Ionicons
-    name="person-circle"
-    size={90}
-    color={colors.primary}
-    />
+      <View
+        style={[
+          styles.profileCard,
+          {
+            backgroundColor: colors.cardBackground,
+            borderColor: colors.cardBorder,
+          },
+        ]}
+      >
+        <Ionicons
+          name="person-circle"
+          size={90}
+          color={colors.primary}
+        />
 
-  <Text
-  style={[
-     styles.name,
-    { color: colors.text },
-  ]}
-  >
-  {name ?? 'Nombre no disponible'}
-  </Text>
+        <Text
+          style={[
+            styles.name,
+            { color: colors.text },
+          ]}
+        >
+          {user.name || 'Nombre no disponible'}
+        </Text>
 
-  <Text
-  style={[
-    styles.label,
-    { color: colors.text },
-  ]}
->
-  Correo electrónico
-</Text>
+        <Text
+          style={[
+            styles.label,
+            { color: colors.text },
+          ]}
+        >
+          Correo electrónico
+        </Text>
 
-<View
-  style={[
-    styles.infoBox,
-    {
-      backgroundColor: colors.background,
-      borderColor: colors.cardBorder,
-    },
-  ]}
->
-  <Text
-    style={[
-      styles.infoText,
-      { color: colors.text },
-    ]}
-  >
-    {email ?? 'No disponible'}
-  </Text>
-</View>
+        <View
+          style={[
+            styles.infoBox,
+            {
+              backgroundColor: colors.background,
+              borderColor: colors.cardBorder,
+            },
+          ]}
+        >
+          <Text
+            style={[
+              styles.infoText,
+              { color: colors.text },
+            ]}
+          >
+            {user.email || 'No disponible'}
+          </Text>
+        </View>
 
-<Text
-  style={[
-    styles.label,
-    { color: colors.text },
-  ]}
->
-  Rol
-</Text>
+        <Text
+          style={[
+            styles.label,
+            { color: colors.text },
+          ]}
+        >
+          Rol
+        </Text>
 
-<View
-  style={[
-    styles.infoBox,
-    {
-      backgroundColor: colors.background,
-      borderColor: colors.cardBorder,
-    },
-  ]}
->
-  <Text
-    style={[
-      styles.infoText,
-      { color: colors.text },
-    ]}
-  >
-    {role ?? 'No disponible'}
-  </Text>
-</View>
+        <View
+          style={[
+            styles.infoBox,
+            {
+              backgroundColor: colors.background,
+              borderColor: colors.cardBorder,
+            },
+          ]}
+        >
+          <Text
+            style={[
+              styles.infoText,
+              { color: colors.text },
+            ]}
+          >
+            {user.role || 'No disponible'}
+          </Text>
+        </View>
 
-<Text
-  style={[
-    styles.label,
-    { color: colors.text },
-  ]}
->
-  Centro educativo
-</Text>
+        <Text
+          style={[
+            styles.label,
+            { color: colors.text },
+          ]}
+        >
+          Centro educativo
+        </Text>
 
-<View
-  style={[
-    styles.infoBox,
-    {
-      backgroundColor: colors.background,
-      borderColor: colors.cardBorder,
-    },
-  ]}
->
-  <Text
-    style={[
-      styles.infoText,
-      { color: colors.text },
-    ]}
-  >
-    {school ?? 'No disponible'}
-  </Text>
-</View>
-  
- </View>
-    <CustomButton
-     title="Cerrar sesión"
-    onPress={handleLogout}
-    variant="secondary"
+        <View
+          style={[
+            styles.infoBox,
+            {
+              backgroundColor: colors.background,
+              borderColor: colors.cardBorder,
+            },
+          ]}
+        >
+          <Text
+            style={[
+              styles.infoText,
+              { color: colors.text },
+            ]}
+          >
+            SchoolManager
+          </Text>
+        </View>
+      </View>
+
+      <CustomButton
+        title="Cerrar sesión"
+        onPress={handleLogout}
+        variant="secondary"
       />
     </ScrollView>
   );
@@ -209,23 +209,23 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
 
-    label: {
+  label: {
     fontSize: 16,
     fontWeight: 'bold',
     marginTop: 18,
-    },
+  },
 
   infoText: {
     fontSize: 16,
     marginTop: 4,
-      textAlign: 'center',
+    textAlign: 'center',
   },
 
   infoBox: {
-  width: '100%',
-  padding: 15,
-  borderRadius: 9,
-  borderWidth: 1,
-  marginTop: 6,
-},
+    width: '100%',
+    padding: 15,
+    borderRadius: 9,
+    borderWidth: 1,
+    marginTop: 6,
+  },
 });

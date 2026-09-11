@@ -9,11 +9,15 @@ import {
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 
+import { useAppDispatch } from '../store/hooks';
+import { setUser } from '../store/slices/userSlice';
+
 type Props = {
   navigation: any;
 };
 
 export default function LoginScreen({ navigation }: Props) {
+  const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -43,7 +47,17 @@ export default function LoginScreen({ navigation }: Props) {
       return;
     }
 
-    navigation.navigate('MainTabs', { email });
+    dispatch(
+  setUser({
+    name: 'Usuario SchoolManager',
+    email,
+    role: 'Administrador',
+  })
+);
+
+console.log('Login: usuario enviado a Redux');
+
+navigation.navigate('MainTabs');
   };
 
   return (

@@ -5,6 +5,7 @@ import HomeScreen from '../screens/HomeScreen';
 import StudentsScreen from '../screens/StudentsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import MatriculasScreen from '../screens/MatriculasScreen';
 
 
 import { useTheme } from '../contexts/ThemeContext';
@@ -61,6 +62,19 @@ export default function TabNavigator({ route }: any) {
         }}
       />
 
+<Tab.Screen
+  name="Matrículas"
+  component={MatriculasScreen}
+  options={{
+    tabBarIcon: ({ color, size }) => (
+      <Ionicons
+        name="school"
+        size={size}
+        color={color}
+      />
+    ),
+  }}
+/>
       <Tab.Screen
   name="Perfil"
   options={{

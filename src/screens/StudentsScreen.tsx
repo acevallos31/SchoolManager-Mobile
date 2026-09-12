@@ -46,7 +46,7 @@ export default function StudentsScreen() {
       numeroIdentificacion: '',
       fechaNacimiento: fechaNacimiento.trim() || null,
       rne: RNE.trim() || null,
-      codigoInterno: null,
+      codigoInterno: null,   
     })
   );
 
@@ -55,6 +55,17 @@ export default function StudentsScreen() {
     apellidos: apellido.trim(),
     rne: RNE.trim() || null,
   });
+    setRNE('');
+    setNombre('');
+    setApellido('');
+    setFechaNacimiento('');
+    setDireccion('');
+
+    setResponsableNombre('');
+    setResponsableApellido('');
+    setTelefono('');
+    setCorreo('');
+    setParentesco('');
 };
 
   return (
@@ -204,12 +215,21 @@ export default function StudentsScreen() {
 )}
 
 {students.map((student) => (
-  <Text
+  <View
     key={student.id}
-    style={{ color: colors.text }}
+    style={{
+      marginBottom: 10,
+    }}
   >
-    {student.nombres} {student.apellidos}
-  </Text>
+    <Text style={{ color: colors.text }}>
+      {student.nombres} {student.apellidos}
+    </Text>
+
+    <CustomButton
+      title="Eliminar alumno"
+      onPress={() => dispatch(removeStudent(student.id))}
+    />
+  </View>
 ))}
     </ScrollView>
   );

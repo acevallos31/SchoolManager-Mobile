@@ -63,6 +63,8 @@ export default function StudentsScreen() {
         styles.container,
         { backgroundColor: colors.background },
       ]}
+        contentContainerStyle={{ paddingBottom: 100 }}
+
     >
       <Text
         style={[
@@ -185,6 +187,30 @@ export default function StudentsScreen() {
         onPress={handleAddStudent}
          />
       </View>
+
+  <Text
+  style={[
+    styles.sectionTitle,
+    { color: colors.text },
+  ]}
+>
+  Alumnos registrados
+</Text>
+
+{students.length === 0 && (
+  <Text style={{ color: colors.text }}>
+    No hay alumnos registrados.
+  </Text>
+)}
+
+{students.map((student) => (
+  <Text
+    key={student.id}
+    style={{ color: colors.text }}
+  >
+    {student.nombres} {student.apellidos}
+  </Text>
+))}
     </ScrollView>
   );
 }

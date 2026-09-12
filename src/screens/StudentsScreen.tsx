@@ -25,7 +25,10 @@ export default function StudentsScreen() {
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [fechaNacimiento, setFechaNacimiento] = useState('');
+  const [tipoIdentificacion, setTipoIdentificacion] = useState('');
+  const [numeroIdentificacion, setNumeroIdentificacion] = useState('');
   const [direccion, setDireccion] = useState('');
+  
 
   const [responsableNombre, setResponsableNombre] = useState('');
   const [responsableApellido, setResponsableApellido] = useState('');
@@ -42,8 +45,8 @@ export default function StudentsScreen() {
       institucionId: '',
       nombres: nombre.trim(),
       apellidos: apellido.trim(),
-      tipoIdentificacion: '',
-      numeroIdentificacion: '',
+      tipoIdentificacion: tipoIdentificacion.trim(),
+      numeroIdentificacion: numeroIdentificacion.trim(),
       fechaNacimiento: fechaNacimiento.trim() || null,
       rne: RNE.trim() || null,
       codigoInterno: null,   
@@ -58,6 +61,8 @@ export default function StudentsScreen() {
     setRNE('');
     setNombre('');
     setApellido('');
+    setTipoIdentificacion('');
+    setNumeroIdentificacion('');
     setFechaNacimiento('');
     setDireccion('');
 
@@ -140,6 +145,20 @@ export default function StudentsScreen() {
           value={fechaNacimiento}
           onChangeText={setFechaNacimiento}
         />
+         
+         <CustomInput
+          label="Tipo de identificación"
+          placeholder="Ej. Identidad, pasaporte"
+          value={tipoIdentificacion}
+          onChangeText={setTipoIdentificacion}
+        />
+
+         <CustomInput
+          label="Número de identificación"
+          placeholder="Ingrese el número de identificación"
+          value={numeroIdentificacion}
+          onChangeText={setNumeroIdentificacion}
+          />
 
         <CustomInput
           label="Dirección"

@@ -12,6 +12,7 @@ import CustomInput from '../components/CustomInput';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { addStudent, removeStudent } from '../store/slices/studentsSlice';
 import CustomButton from '../components/CustomButton';
+import * as Crypto from 'expo-crypto';
 
 export default function StudentsScreen() {
   const { colors } = useTheme();
@@ -41,7 +42,7 @@ export default function StudentsScreen() {
 
   dispatch(
     addStudent({
-      id: Date.now().toString(),
+      id: Crypto.randomUUID(),
       institucionId: '',
       nombres: nombre.trim(),
       apellidos: apellido.trim(),

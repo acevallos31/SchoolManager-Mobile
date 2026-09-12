@@ -9,9 +9,17 @@ import {
 
 import { useTheme } from '../contexts/ThemeContext';
 import CustomInput from '../components/CustomInput';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { addStudent, removeStudent } from '../store/slices/studentsSlice';
+import CustomButton from '../components/CustomButton';
 
 export default function StudentsScreen() {
   const { colors } = useTheme();
+
+  const dispatch = useAppDispatch();
+  const students = useAppSelector(
+  (state) => state.students.students
+);
 
   const [RNE, setRNE] = useState('');
   const [nombre, setNombre] = useState('');
@@ -24,6 +32,30 @@ export default function StudentsScreen() {
   const [telefono, setTelefono] = useState('');
   const [correo, setCorreo] = useState('');
   const [parentesco, setParentesco] = useState('');
+
+  const handleAddStudent = () => {
+  if (!nombre.trim() || !apellido.trim()) return;
+
+  dispatch(
+    addStudent({
+      id: Date.now().toString(),
+      institucionId: '',
+      nombres: nombre.trim(),
+      apellidos: apellido.trim(),
+      tipoIdentificacion: '',
+      numeroIdentificacion: '',
+      fechaNacimiento: fechaNacimiento.trim() || null,
+      rne: RNE.trim() || null,
+      codigoInterno: null,
+    })
+  );
+
+  console.log('Alumno enviado a Redux:', {
+    nombres: nombre.trim(),
+    apellidos: apellido.trim(),
+    rne: RNE.trim() || null,
+  });
+};
 
   return (
     <ScrollView
@@ -147,6 +179,11 @@ export default function StudentsScreen() {
           value={parentesco}
           onChangeText={setParentesco}
         />
+       
+       <CustomButton
+        title="Agregar alumno"
+        onPress={handleAddStudent}
+         />
       </View>
     </ScrollView>
   );

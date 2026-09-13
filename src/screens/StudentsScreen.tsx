@@ -41,24 +41,36 @@ export default function StudentsScreen() {
   if (!nombre.trim() || !apellido.trim()) return;
 
   dispatch(
-    addStudent({
-      id: Crypto.randomUUID(),
-      institucionId: '',
-      nombres: nombre.trim(),
-      apellidos: apellido.trim(),
-      tipoIdentificacion: tipoIdentificacion.trim(),
-      numeroIdentificacion: numeroIdentificacion.trim(),
-      fechaNacimiento: fechaNacimiento.trim() || null,
-      rne: RNE.trim() || null,
-      codigoInterno: null,   
-    })
-  );
-
-  console.log('Alumno enviado a Redux:', {
+  addStudent({
+    id: Crypto.randomUUID(),
+    institucionId: '',
     nombres: nombre.trim(),
     apellidos: apellido.trim(),
+    tipoIdentificacion: tipoIdentificacion.trim(),
+    numeroIdentificacion: numeroIdentificacion.trim(),
+    fechaNacimiento: fechaNacimiento.trim() || null,
     rne: RNE.trim() || null,
-  });
+    codigoInterno: null,
+    direccion: direccion.trim(),
+    responsableNombre: responsableNombre.trim(),
+    responsableApellido: responsableApellido.trim(),
+    telefono: telefono.trim(),
+    correo: correo.trim(),
+    parentesco: parentesco.trim(),
+  })
+);
+
+ console.log('Alumno enviado a Redux:', {
+  nombres: nombre.trim(),
+  apellidos: apellido.trim(),
+  rne: RNE.trim() || null,
+  direccion: direccion.trim(),
+  responsableNombre: responsableNombre.trim(),
+  responsableApellido: responsableApellido.trim(),
+  telefono: telefono.trim(),
+  correo: correo.trim(),
+  parentesco: parentesco.trim(),
+});
     setRNE('');
     setNombre('');
     setApellido('');
@@ -244,6 +256,26 @@ export default function StudentsScreen() {
     <Text style={{ color: colors.text }}>
       {student.nombres} {student.apellidos}
     </Text>
+     
+     <Text style={{ color: colors.text }}>
+    Dirección: {student.direccion}
+    </Text>
+
+   <Text style={{ color: colors.text }}>
+    Responsable: {student.responsableNombre} {student.responsableApellido}
+    </Text>
+
+    <Text style={{ color: colors.text }}>
+     Teléfono: {student.telefono}
+    </Text>
+
+    <Text style={{ color: colors.text }}>
+     Correo: {student.correo}
+    </Text>
+
+     <Text style={{ color: colors.text }}>
+      Parentesco: {student.parentesco}
+     </Text>
 
     <CustomButton
       title="Eliminar alumno"

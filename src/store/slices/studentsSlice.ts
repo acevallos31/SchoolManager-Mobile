@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
 export type Student = {
   id: string;
   institucionId: string;
@@ -10,8 +9,13 @@ export type Student = {
   fechaNacimiento: string | null;
   rne: string | null;
   codigoInterno: string | null;
+  direccion: string;
+  responsableNombre: string;
+  responsableApellido: string;
+  telefono: string;
+  correo: string;
+  parentesco: string;
 };
-
 export type StudentsState = {
   students: Student[];
 };

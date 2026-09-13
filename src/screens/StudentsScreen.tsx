@@ -51,12 +51,6 @@ export default function StudentsScreen() {
     fechaNacimiento: fechaNacimiento.trim() || null,
     rne: RNE.trim() || null,
     codigoInterno: null,
-    direccion: direccion.trim(),
-    responsableNombre: responsableNombre.trim(),
-    responsableApellido: responsableApellido.trim(),
-    telefono: telefono.trim(),
-    correo: correo.trim(),
-    parentesco: parentesco.trim(),
   })
 );
 
@@ -64,12 +58,6 @@ export default function StudentsScreen() {
   nombres: nombre.trim(),
   apellidos: apellido.trim(),
   rne: RNE.trim() || null,
-  direccion: direccion.trim(),
-  responsableNombre: responsableNombre.trim(),
-  responsableApellido: responsableApellido.trim(),
-  telefono: telefono.trim(),
-  correo: correo.trim(),
-  parentesco: parentesco.trim(),
 });
     setRNE('');
     setNombre('');
@@ -256,27 +244,7 @@ export default function StudentsScreen() {
     <Text style={{ color: colors.text }}>
       {student.nombres} {student.apellidos}
     </Text>
-     
-     <Text style={{ color: colors.text }}>
-    Dirección: {student.direccion}
-    </Text>
-
-   <Text style={{ color: colors.text }}>
-    Responsable: {student.responsableNombre} {student.responsableApellido}
-    </Text>
-
-    <Text style={{ color: colors.text }}>
-     Teléfono: {student.telefono}
-    </Text>
-
-    <Text style={{ color: colors.text }}>
-     Correo: {student.correo}
-    </Text>
-
-     <Text style={{ color: colors.text }}>
-      Parentesco: {student.parentesco}
-     </Text>
-
+  
     <CustomButton
       title="Eliminar alumno"
       onPress={() => dispatch(removeStudent(student.id))}

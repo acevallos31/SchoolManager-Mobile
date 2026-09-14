@@ -9,15 +9,27 @@ import {
 
 import { useTheme } from '../contexts/ThemeContext';
 import CustomInput from '../components/CustomInput';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { addStudent, removeStudent } from '../store/slices/studentsSlice';
+import CustomButton from '../components/CustomButton';
+import * as Crypto from 'expo-crypto';
 
 export default function StudentsScreen() {
   const { colors } = useTheme();
+
+  const dispatch = useAppDispatch();
+  const students = useAppSelector(
+  (state) => state.students.students
+);
 
   const [RNE, setRNE] = useState('');
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [fechaNacimiento, setFechaNacimiento] = useState('');
+  const [tipoIdentificacion, setTipoIdentificacion] = useState('');
+  const [numeroIdentificacion, setNumeroIdentificacion] = useState('');
   const [direccion, setDireccion] = useState('');
+  
 
   const [responsableNombre, setResponsableNombre] = useState('');
   const [responsableApellido, setResponsableApellido] = useState('');
@@ -25,12 +37,51 @@ export default function StudentsScreen() {
   const [correo, setCorreo] = useState('');
   const [parentesco, setParentesco] = useState('');
 
+  const handleAddStudent = () => {
+  if (!nombre.trim() || !apellido.trim()) return;
+
+  dispatch(
+  addStudent({
+    id: Crypto.randomUUID(),
+    institucionId: '',
+    nombres: nombre.trim(),
+    apellidos: apellido.trim(),
+    tipoIdentificacion: tipoIdentificacion.trim(),
+    numeroIdentificacion: numeroIdentificacion.trim(),
+    fechaNacimiento: fechaNacimiento.trim() || null,
+    rne: RNE.trim() || null,
+    codigoInterno: null,
+  })
+);
+
+ console.log('Alumno enviado a Redux:', {
+  nombres: nombre.trim(),
+  apellidos: apellido.trim(),
+  rne: RNE.trim() || null,
+});
+    setRNE('');
+    setNombre('');
+    setApellido('');
+    setTipoIdentificacion('');
+    setNumeroIdentificacion('');
+    setFechaNacimiento('');
+    setDireccion('');
+
+    setResponsableNombre('');
+    setResponsableApellido('');
+    setTelefono('');
+    setCorreo('');
+    setParentesco('');
+};
+
   return (
     <ScrollView
       style={[
         styles.container,
         { backgroundColor: colors.background },
       ]}
+        contentContainerStyle={{ paddingBottom: 100 }}
+
     >
       <Text
         style={[
@@ -95,6 +146,20 @@ export default function StudentsScreen() {
           value={fechaNacimiento}
           onChangeText={setFechaNacimiento}
         />
+         
+         <CustomInput
+          label="Tipo de identificación"
+          placeholder="Ej. Identidad, pasaporte"
+          value={tipoIdentificacion}
+          onChangeText={setTipoIdentificacion}
+        />
+
+         <CustomInput
+          label="Número de identificación"
+          placeholder="Ingrese el número de identificación"
+          value={numeroIdentificacion}
+          onChangeText={setNumeroIdentificacion}
+          />
 
         <CustomInput
           label="Dirección"
@@ -147,7 +212,45 @@ export default function StudentsScreen() {
           value={parentesco}
           onChangeText={setParentesco}
         />
+       
+       <CustomButton
+        title="Agregar alumno"
+        onPress={handleAddStudent}
+         />
       </View>
+
+  <Text
+  style={[
+    styles.sectionTitle,
+    { color: colors.text },
+  ]}
+>
+  Alumnos registrados
+</Text>
+
+{students.length === 0 && (
+  <Text style={{ color: colors.text }}>
+    No hay alumnos registrados.
+  </Text>
+)}
+
+{students.map((student) => (
+  <View
+    key={student.id}
+    style={{
+      marginBottom: 10,
+    }}
+  >
+    <Text style={{ color: colors.text }}>
+      {student.nombres} {student.apellidos}
+    </Text>
+  
+    <CustomButton
+      title="Eliminar alumno"
+      onPress={() => dispatch(removeStudent(student.id))}
+    />
+  </View>
+))}
     </ScrollView>
   );
 }

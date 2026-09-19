@@ -5,6 +5,8 @@ type UserState = {
   email: string;
   role: string;
   accessToken: string;
+  institutionId: string;
+  institutionName: string;
   isAuthenticated: boolean;
 };
 
@@ -13,6 +15,8 @@ const initialUserState: UserState = {
   email: '',
   role: '',
   accessToken: '',
+  institutionId: '',
+  institutionName: '',
   isAuthenticated: false,
 };
 
@@ -27,12 +31,16 @@ const userSlice = createSlice({
         email: string;
         role: string;
         accessToken: string;
+        institutionId: string;
+        institutionName: string;
       }>
     ) => {
       state.name = action.payload.name;
       state.email = action.payload.email;
       state.role = action.payload.role;
       state.accessToken = action.payload.accessToken;
+      state.institutionId = action.payload.institutionId;
+      state.institutionName = action.payload.institutionName;
       state.isAuthenticated = true;
     },
 
@@ -41,6 +49,8 @@ const userSlice = createSlice({
       state.email = '';
       state.role = '';
       state.accessToken = '';
+      state.institutionId = '';
+      state.institutionName = '';
       state.isAuthenticated = false;
     },
   },

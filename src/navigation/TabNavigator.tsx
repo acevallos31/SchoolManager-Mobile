@@ -7,12 +7,17 @@ import SettingsScreen from '../screens/SettingsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import MatriculasScreen from '../screens/MatriculasScreen';
 
-import { useTheme } from '../contexts/ThemeContext';
+import { useAppSelector } from '../store/hooks';
+import { getThemeColors } from '../store/slices/themeSlice';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
-  const { colors } = useTheme();
+  const isDark = useAppSelector(
+    (state) => state.theme.isDark
+  );
+
+  const colors = getThemeColors(isDark);
 
   return (
     <Tab.Navigator

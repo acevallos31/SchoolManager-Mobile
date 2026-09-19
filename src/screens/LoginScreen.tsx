@@ -48,16 +48,16 @@ export default function LoginScreen({ navigation }: Props) {
     }
 
     dispatch(
-  setUser({
-    name: 'Usuario SchoolManager',
-    email,
-    role: 'Administrador',
-  })
-);
+      setUser({
+        name: 'Usuario SchoolManager',
+        email,
+        role: 'Administrador',
+      })
+    );
 
-console.log('Login: usuario enviado a Redux');
+    console.log('Login: usuario enviado a Redux');
 
-navigation.navigate('MainTabs');
+    navigation.navigate('MainTabs');
   };
 
   return (

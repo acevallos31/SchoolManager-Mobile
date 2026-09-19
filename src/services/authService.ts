@@ -1,5 +1,14 @@
 import { environment } from '../config/environment';
 
+export type InstitucionAcceso = {
+  id: string;
+  nombre: string;
+  nombreCorto?: string | null;
+  roles: string[];
+  permisos: string[];
+  activo?: boolean;
+};
+
 export type UsuarioActual = {
   id: string;
   personaId: string;
@@ -10,14 +19,8 @@ export type UsuarioActual = {
     roles: string[];
     permisos: string[];
   };
-  instituciones?: Array<{
-    id: string;
-    nombre: string;
-    nombreCorto?: string | null;
-    roles: string[];
-    permisos: string[];
-    activo?: boolean;
-  }>;
+  instituciones?: InstitucionAcceso[];
+  institucionesAdministrables?: InstitucionAcceso[];
 };
 
 type SupabasePasswordToken = {

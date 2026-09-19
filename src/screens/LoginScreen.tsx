@@ -45,10 +45,18 @@ export default function LoginScreen({ navigation }: Props) {
       const { accessToken, email: sessionEmail, perfil } =
         await loginSchoolManager(email, password);
 
+      const institution =
+        perfil.instituciones?.find((item) => item.activo !== false) ||
+        perfil.institucionesAdministrables?.find(
+          (item) => item.activo !== false
+        );
+
       const roles =
-        perfil.roles?.length > 0
-          ? perfil.roles
-          : perfil.ambitoGlobal?.roles || [];
+        institution?.roles?.length
+          ? institution.roles
+          : perfil.roles?.length
+            ? perfil.roles
+            : perfil.ambitoGlobal?.roles || [];
 
       dispatch(
         setUser({
@@ -56,6 +64,11 @@ export default function LoginScreen({ navigation }: Props) {
           email: sessionEmail,
           role: roles[0] || 'Usuario',
           accessToken,
+          institutionId: institution?.id || '',
+          institutionName:
+            institution?.nombreCorto ||
+            institution?.nombre ||
+            'SchoolManager',
         })
       );
 
@@ -100,7 +113,7 @@ export default function LoginScreen({ navigation }: Props) {
       />
 
       <Text style={styles.connectionHint}>
-        Conectado a SchoolManager API
+        Supabase Auth + SchoolManager API .NET
       </Text>
     </View>
   );

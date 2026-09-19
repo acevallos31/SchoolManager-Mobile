@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+
 import {
   setAlumnoId,
   setCicloId,
@@ -14,11 +15,6 @@ import {
   setPeriodoMatriculaId,
   setSeccionId,
 } from '../store/slices/enrollmentSlice';
-
-const alumnos = [
-  { id: 'alumno-1', nombre: 'Ana López' },
-  { id: 'alumno-2', nombre: 'Carlos Martínez' },
-];
 
 const ciclos = [
   { id: 'ciclo-2026', nombre: '2026' },
@@ -83,6 +79,10 @@ export default function MatriculasScreen() {
     (state) => state.enrollment
   );
 
+  const alumnos = useAppSelector(
+    (state) => state.students.students
+  );
+
   const periodosDisponibles = periodosMatricula.filter(
     (periodo) => periodo.cicloId === enrollment.cicloId
   );
@@ -99,13 +99,21 @@ export default function MatriculasScreen() {
 
       <Text style={styles.label}>Alumno</Text>
 
+      {alumnos.length === 0 && (
+        <Text style={styles.emptyText}>
+          No hay alumnos registrados.
+        </Text>
+      )}
+
       {alumnos.map((alumno) => (
         <Pressable
           key={alumno.id}
           style={styles.option}
           onPress={() => dispatch(setAlumnoId(alumno.id))}
         >
-          <Text>{alumno.nombre}</Text>
+          <Text>
+            {alumno.nombres} {alumno.apellidos}
+          </Text>
         </Pressable>
       ))}
 
@@ -160,7 +168,9 @@ export default function MatriculasScreen() {
       ))}
 
       <View style={styles.summary}>
-        <Text style={styles.summaryTitle}>Selección actual</Text>
+        <Text style={styles.summaryTitle}>
+          Selección actual
+        </Text>
 
         <Text>
           Alumno: {enrollment.alumnoId || 'Sin seleccionar'}
@@ -191,17 +201,20 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
   },
+
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
   },
+
   label: {
     fontSize: 16,
     fontWeight: 'bold',
     marginTop: 15,
     marginBottom: 8,
   },
+
   option: {
     borderWidth: 1,
     borderColor: '#999',
@@ -209,6 +222,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     borderRadius: 6,
   },
+
+  emptyText: {
+    marginBottom: 8,
+  },
+
   summary: {
     marginTop: 25,
     padding: 15,
@@ -216,6 +234,7 @@ const styles = StyleSheet.create({
     borderColor: '#999',
     borderRadius: 6,
   },
+
   summaryTitle: {
     fontWeight: 'bold',
     marginBottom: 8,

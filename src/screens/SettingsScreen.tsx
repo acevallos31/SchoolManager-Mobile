@@ -1,10 +1,20 @@
 import { View, Text, StyleSheet, Switch } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import { useTheme } from '../contexts/ThemeContext';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import {
+  getThemeColors,
+  toggleTheme,
+} from '../store/slices/themeSlice';
 
 export default function SettingsScreen() {
-  const { isDark, colors, toggleTheme } = useTheme();
+  const dispatch = useAppDispatch();
+
+  const isDark = useAppSelector(
+    (state) => state.theme.isDark
+  );
+
+  const colors = getThemeColors(isDark);
 
   return (
     <View
@@ -61,7 +71,8 @@ export default function SettingsScreen() {
 
         <Switch
           value={isDark}
-          onValueChange={toggleTheme}
+          onValueChange={() =>{
+                       dispatch(toggleTheme())}}
         />
       </View>
     </View>

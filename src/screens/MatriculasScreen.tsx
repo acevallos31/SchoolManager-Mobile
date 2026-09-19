@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { getThemeColors } from '../store/slices/themeSlice';
 
 import {
   setAlumnoId,
@@ -83,6 +84,12 @@ export default function MatriculasScreen() {
     (state) => state.students.students
   );
 
+  const isDark = useAppSelector(
+    (state) => state.theme.isDark
+  );
+
+  const colors = getThemeColors(isDark);
+
   const periodosDisponibles = periodosMatricula.filter(
     (periodo) => periodo.cicloId === enrollment.cicloId
   );
@@ -94,13 +101,35 @@ export default function MatriculasScreen() {
   );
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Matrículas</Text>
+    <ScrollView
+      style={{ backgroundColor: colors.background }}
+      contentContainerStyle={styles.container}
+    >
+      <Text
+        style={[
+          styles.title,
+          { color: colors.text },
+        ]}
+      >
+        Matrículas
+      </Text>
 
-      <Text style={styles.label}>Alumno</Text>
+      <Text
+        style={[
+          styles.label,
+          { color: colors.text },
+        ]}
+      >
+        Alumno
+      </Text>
 
       {alumnos.length === 0 && (
-        <Text style={styles.emptyText}>
+        <Text
+          style={[
+            styles.emptyText,
+            { color: colors.textSecondary },
+          ]}
+        >
           No hay alumnos registrados.
         </Text>
       )}
@@ -108,88 +137,167 @@ export default function MatriculasScreen() {
       {alumnos.map((alumno) => (
         <Pressable
           key={alumno.id}
-          style={styles.option}
+          style={[
+            styles.option,
+            {
+              backgroundColor: colors.cardBackground,
+              borderColor: colors.cardBorder,
+            },
+          ]}
           onPress={() => dispatch(setAlumnoId(alumno.id))}
         >
-          <Text>
+          <Text style={{ color: colors.text }}>
             {alumno.nombres} {alumno.apellidos}
           </Text>
         </Pressable>
       ))}
 
-      <Text style={styles.label}>Ciclo escolar</Text>
+      <Text
+        style={[
+          styles.label,
+          { color: colors.text },
+        ]}
+      >
+        Ciclo escolar
+      </Text>
 
       {ciclos.map((ciclo) => (
         <Pressable
           key={ciclo.id}
-          style={styles.option}
+          style={[
+            styles.option,
+            {
+              backgroundColor: colors.cardBackground,
+              borderColor: colors.cardBorder,
+            },
+          ]}
           onPress={() => dispatch(setCicloId(ciclo.id))}
         >
-          <Text>{ciclo.nombre}</Text>
+          <Text style={{ color: colors.text }}>
+            {ciclo.nombre}
+          </Text>
         </Pressable>
       ))}
 
-      <Text style={styles.label}>Período de matrícula</Text>
+      <Text
+        style={[
+          styles.label,
+          { color: colors.text },
+        ]}
+      >
+        Período de matrícula
+      </Text>
 
       {periodosDisponibles.map((periodo) => (
         <Pressable
           key={periodo.id}
-          style={styles.option}
+          style={[
+            styles.option,
+            {
+              backgroundColor: colors.cardBackground,
+              borderColor: colors.cardBorder,
+            },
+          ]}
           onPress={() =>
             dispatch(setPeriodoMatriculaId(periodo.id))
           }
         >
-          <Text>{periodo.nombre}</Text>
+          <Text style={{ color: colors.text }}>
+            {periodo.nombre}
+          </Text>
         </Pressable>
       ))}
 
-      <Text style={styles.label}>Grado</Text>
+      <Text
+        style={[
+          styles.label,
+          { color: colors.text },
+        ]}
+      >
+        Grado
+      </Text>
 
       {grados.map((grado) => (
         <Pressable
           key={grado.id}
-          style={styles.option}
+          style={[
+            styles.option,
+            {
+              backgroundColor: colors.cardBackground,
+              borderColor: colors.cardBorder,
+            },
+          ]}
           onPress={() => dispatch(setGradoId(grado.id))}
         >
-          <Text>{grado.nombre}</Text>
+          <Text style={{ color: colors.text }}>
+            {grado.nombre}
+          </Text>
         </Pressable>
       ))}
 
-      <Text style={styles.label}>Sección</Text>
+      <Text
+        style={[
+          styles.label,
+          { color: colors.text },
+        ]}
+      >
+        Sección
+      </Text>
 
       {seccionesDisponibles.map((seccion) => (
         <Pressable
           key={seccion.id}
-          style={styles.option}
+          style={[
+            styles.option,
+            {
+              backgroundColor: colors.cardBackground,
+              borderColor: colors.cardBorder,
+            },
+          ]}
           onPress={() => dispatch(setSeccionId(seccion.id))}
         >
-          <Text>{seccion.nombre}</Text>
+          <Text style={{ color: colors.text }}>
+            {seccion.nombre}
+          </Text>
         </Pressable>
       ))}
 
-      <View style={styles.summary}>
-        <Text style={styles.summaryTitle}>
+      <View
+        style={[
+          styles.summary,
+          {
+            backgroundColor: colors.cardBackground,
+            borderColor: colors.cardBorder,
+          },
+        ]}
+      >
+        <Text
+          style={[
+            styles.summaryTitle,
+            { color: colors.text },
+          ]}
+        >
           Selección actual
         </Text>
 
-        <Text>
+        <Text style={{ color: colors.text }}>
           Alumno: {enrollment.alumnoId || 'Sin seleccionar'}
         </Text>
 
-        <Text>
+        <Text style={{ color: colors.text }}>
           Ciclo: {enrollment.cicloId || 'Sin seleccionar'}
         </Text>
 
-        <Text>
+        <Text style={{ color: colors.text }}>
           Período:{' '}
           {enrollment.periodoMatriculaId || 'Sin seleccionar'}
         </Text>
 
-        <Text>
+        <Text style={{ color: colors.text }}>
           Grado: {enrollment.gradoId || 'Sin seleccionar'}
         </Text>
 
-        <Text>
+        <Text style={{ color: colors.text }}>
           Sección: {enrollment.seccionId || 'Sin seleccionar'}
         </Text>
       </View>
@@ -217,7 +325,6 @@ const styles = StyleSheet.create({
 
   option: {
     borderWidth: 1,
-    borderColor: '#999',
     padding: 10,
     marginBottom: 8,
     borderRadius: 6,
@@ -231,7 +338,6 @@ const styles = StyleSheet.create({
     marginTop: 25,
     padding: 15,
     borderWidth: 1,
-    borderColor: '#999',
     borderRadius: 6,
   },
 

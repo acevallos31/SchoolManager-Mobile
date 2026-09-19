@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from 'react-native';
 
-import { useTheme } from '../contexts/ThemeContext';
+import { getThemeColors } from '../store/slices/themeSlice';
 import CustomInput from '../components/CustomInput';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { addStudent, removeStudent } from '../store/slices/studentsSlice';
@@ -15,7 +15,11 @@ import CustomButton from '../components/CustomButton';
 import * as Crypto from 'expo-crypto';
 
 export default function StudentsScreen() {
-  const { colors } = useTheme();
+  const isDark = useAppSelector(
+  (state) => state.theme.isDark
+);
+
+const colors = getThemeColors(isDark);
 
   const dispatch = useAppDispatch();
   const students = useAppSelector(
@@ -30,7 +34,6 @@ export default function StudentsScreen() {
   const [numeroIdentificacion, setNumeroIdentificacion] = useState('');
   const [direccion, setDireccion] = useState('');
   
-
   const [responsableNombre, setResponsableNombre] = useState('');
   const [responsableApellido, setResponsableApellido] = useState('');
   const [telefono, setTelefono] = useState('');

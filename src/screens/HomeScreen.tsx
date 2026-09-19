@@ -7,15 +7,22 @@ import {
   Dimensions,
 } from 'react-native';
 
-import { useTheme } from '../contexts/ThemeContext';
 import InfoCard from '../components/InfoCard';
 import { useAppSelector } from '../store/hooks';
-
+import { getThemeColors } from '../store/slices/themeSlice';
 
 export default function HomeScreen() {
-  const { colors } = useTheme();
-
   const user = useAppSelector((state) => state.user);
+
+  const isDark = useAppSelector(
+    (state) => state.theme.isDark
+  );
+
+  const colors = getThemeColors(isDark);
+
+  const students = useAppSelector(
+    (state) => state.students.students
+  );
 
   return (
     <ScrollView
@@ -71,7 +78,7 @@ export default function HomeScreen() {
       <View style={styles.row}>
         <InfoCard
           title="Alumnos"
-          value="125"
+          value={students.length.toString()}
         />
 
         <InfoCard

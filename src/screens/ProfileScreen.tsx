@@ -7,7 +7,7 @@ import {
 
 import { Ionicons } from '@expo/vector-icons';
 
-import { useTheme } from '../contexts/ThemeContext';
+import { getThemeColors } from '../store/slices/themeSlice';
 import CustomButton from '../components/CustomButton';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { clearUser } from '../store/slices/userSlice';
@@ -19,9 +19,15 @@ type Props = {
 export default function ProfileScreen({
   navigation,
 }: Props) {
-  const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.user);
-  const { colors } = useTheme();
+ const dispatch = useAppDispatch();
+
+const user = useAppSelector((state) => state.user);
+
+const isDark = useAppSelector(
+  (state) => state.theme.isDark
+);
+
+const colors = getThemeColors(isDark);
 
   const handleLogout = () => {
     dispatch(clearUser());

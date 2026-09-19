@@ -6,9 +6,11 @@ import StudentsScreen from '../screens/StudentsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import MatriculasScreen from '../screens/MatriculasScreen';
+import ResponsablesScreen from '../screens/ResponsablesScreen';
 
 import { useAppSelector } from '../store/hooks';
 import { getThemeColors } from '../store/slices/themeSlice';
+
 
 const Tab = createBottomTabNavigator();
 
@@ -63,6 +65,20 @@ export default function TabNavigator() {
           ),
         }}
       />
+
+      <Tab.Screen
+      name="Responsables"
+      component={ResponsablesScreen}
+        options={{
+        tabBarIcon: ({ color, size }) => (
+      <Ionicons
+        name="people-circle"
+        size={size}
+        color={color}
+      />
+    ),
+  }}
+/>
 
       <Tab.Screen
         name="Matrículas"

@@ -11,6 +11,7 @@ import CustomButton from '../components/CustomButton';
 
 import { useAppDispatch } from '../store/hooks';
 import { setUser } from '../store/slices/userSlice';
+import { loginSchoolManager } from '../services/authService';
 
 type Props = {
   navigation: any;
@@ -20,44 +21,68 @@ export default function LoginScreen({ navigation }: Props) {
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const validateEmail = (email: string) => {
-    return email.includes('@') && email.endsWith('.edu');
+  const validateEmail = (value: string) => {
+    const normalized = value.trim();
+    return normalized.includes('@') && normalized.includes('.');
   };
 
-  const handleLogin = () => {
-    if (email === '' || password === '') {
+  const handleLogin = async () => {
+    if (!email.trim() || !password) {
       Alert.alert('Error', 'Todos los campos son obligatorios');
       return;
     }
 
     if (!validateEmail(email)) {
-      Alert.alert(
-        'Error',
-        'El correo electrónico debe tener extensión .edu'
-      );
+      Alert.alert('Error', 'Ingresa un correo electrónico válido');
       return;
     }
 
-    if (password.length < 4) {
-      Alert.alert(
-        'Error',
-        'La contraseña debe tener al menos 4 caracteres'
+    setLoading(true);
+
+    try {
+      const { accessToken, email: sessionEmail, perfil } =
+        await loginSchoolManager(email, password);
+
+      const institution =
+        perfil.instituciones?.find((item) => item.activo !== false) ||
+        perfil.institucionesAdministrables?.find(
+          (item) => item.activo !== false
+        );
+
+      const roles =
+        institution?.roles?.length
+          ? institution.roles
+          : perfil.roles?.length
+            ? perfil.roles
+            : perfil.ambitoGlobal?.roles || [];
+
+      dispatch(
+        setUser({
+          name: perfil.nombreCompleto || 'Usuario SchoolManager',
+          email: sessionEmail,
+          role: roles[0] || 'Usuario',
+          accessToken,
+          institutionId: institution?.id || '',
+          institutionName:
+            institution?.nombreCorto ||
+            institution?.nombre ||
+            'SchoolManager',
+        })
       );
-      return;
+
+      navigation.replace('MainTabs');
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'No fue posible iniciar sesión.';
+
+      Alert.alert('No se pudo iniciar sesión', message);
+    } finally {
+      setLoading(false);
     }
-
-    dispatch(
-      setUser({
-        name: 'Usuario SchoolManager',
-        email,
-        role: 'Administrador',
-      })
-    );
-
-    console.log('Login: usuario enviado a Redux');
-
-    navigation.navigate('MainTabs');
   };
 
   return (
@@ -81,10 +106,15 @@ export default function LoginScreen({ navigation }: Props) {
       />
 
       <CustomButton
-        title="Ingresar"
+        title={loading ? 'Conectando...' : 'Ingresar'}
         onPress={handleLogin}
         variant="primary"
+        disabled={loading}
       />
+
+      <Text style={styles.connectionHint}>
+        Supabase Auth + SchoolManager API .NET
+      </Text>
     </View>
   );
 }
@@ -110,5 +140,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#475569',
     marginBottom: 30,
+  },
+
+  connectionHint: {
+    marginTop: 16,
+    textAlign: 'center',
+    color: '#64748B',
+    fontSize: 12,
   },
 });

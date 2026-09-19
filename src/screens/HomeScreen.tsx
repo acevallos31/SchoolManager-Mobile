@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -10,6 +11,7 @@ import {
 import InfoCard from '../components/InfoCard';
 import { useAppSelector } from '../store/hooks';
 import { getThemeColors } from '../store/slices/themeSlice';
+import { listarAlumnos } from '../services/alumnosService';
 
 export default function HomeScreen() {
   const user = useAppSelector((state) => state.user);
@@ -19,10 +21,33 @@ export default function HomeScreen() {
   );
 
   const colors = getThemeColors(isDark);
+  const [remoteStudentCount, setRemoteStudentCount] = useState<number | null>(null);
+  const [apiStatus, setApiStatus] = useState('Validando API...');
 
-  const students = useAppSelector(
-    (state) => state.students.students
-  );
+  useEffect(() => {
+    if (!user.accessToken) {
+      setApiStatus('Sin sesión');
+      return;
+    }
+
+    let active = true;
+
+    listarAlumnos(user.accessToken, user.institutionId || undefined)
+      .then((items) => {
+        if (!active) return;
+        setRemoteStudentCount(items.length);
+        setApiStatus('Sesión validada por API .NET');
+      })
+      .catch(() => {
+        if (!active) return;
+        setRemoteStudentCount(null);
+        setApiStatus('Sesión válida; no se pudo cargar Alumnos');
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [user.accessToken, user.institutionId]);
 
   return (
     <ScrollView
@@ -45,7 +70,7 @@ export default function HomeScreen() {
           { color: colors.text },
         ]}
       >
-        Bienvenido
+        Bienvenido {user.name || ''}
       </Text>
 
       <Text
@@ -55,6 +80,15 @@ export default function HomeScreen() {
         ]}
       >
         {user.email}
+      </Text>
+
+      <Text
+        style={[
+          styles.apiStatus,
+          { color: colors.primary },
+        ]}
+      >
+        {apiStatus}
       </Text>
 
       <Text
@@ -72,13 +106,13 @@ export default function HomeScreen() {
           { color: colors.textSecondary },
         ]}
       >
-        Panel principal
+        Panel principal · {user.role || 'Usuario'}
       </Text>
 
       <View style={styles.row}>
         <InfoCard
           title="Alumnos"
-          value={students.length.toString()}
+          value={remoteStudentCount === null ? '—' : remoteStudentCount.toString()}
         />
 
         <InfoCard
@@ -123,7 +157,7 @@ export default function HomeScreen() {
             { color: colors.primary },
           ]}
         >
-          Noan's Garden
+          {user.institutionName || 'SchoolManager'}
         </Text>
       </View>
     </ScrollView>
@@ -154,7 +188,13 @@ const styles = StyleSheet.create({
 
   email: {
     fontSize: 15,
-    marginBottom: 15,
+    marginBottom: 8,
+  },
+
+  apiStatus: {
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: 12,
   },
 
   title: {

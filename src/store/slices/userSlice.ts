@@ -1,10 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { UsuarioActual } from '../../services/authApi';
 
 type UserState = {
   name: string;
   email: string;
   role: string;
   isAuthenticated: boolean;
+  profile: UsuarioActual | null;
 };
 
 const initialUserState: UserState = {
@@ -12,6 +14,7 @@ const initialUserState: UserState = {
   email: '',
   role: '',
   isAuthenticated: false,
+  profile: null,
 };
 
 const userSlice = createSlice({
@@ -24,6 +27,7 @@ const userSlice = createSlice({
         name: string;
         email: string;
         role: string;
+        profile: UsuarioActual;
       }>
     ) => {
       state.name = action.payload.name;
@@ -31,17 +35,10 @@ const userSlice = createSlice({
       state.role = action.payload.role;
       state.isAuthenticated = true;
 
-      console.log('Usuario guardado en Redux:', state);
+      state.profile = action.payload.profile;
     },
 
-    clearUser: (state) => {
-      state.name = '';
-      state.email = '';
-      state.role = '';
-      state.isAuthenticated = false;
-
-      console.log('Usuario eliminado de Redux');
-    },
+    clearUser: () => initialUserState,
   },
 });
 

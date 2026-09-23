@@ -30,6 +30,8 @@ export default function CustomButton({
       style={[styles.button, getStyles(), disabled && styles.disabledButton]}
       onPress={onPress}
       disabled={disabled}
+      accessibilityRole="button"
+      accessibilityState={{ disabled }}
     >
       <Text style={styles.buttonText}>{title}</Text>
     </Pressable>

@@ -1,5 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native';
-import { useTheme } from '../contexts/ThemeContext';
+
+import { useAppSelector } from '../store/hooks';
+import { getThemeColors } from '../store/slices/themeSlice';
 
 type Props = {
   title: string;
@@ -7,7 +9,11 @@ type Props = {
 };
 
 export default function InfoCard({ title, value }: Props) {
-  const { colors } = useTheme();
+  const isDark = useAppSelector(
+    (state) => state.theme.isDark
+  );
+
+  const colors = getThemeColors(isDark);
 
   return (
     <View
@@ -19,11 +25,21 @@ export default function InfoCard({ title, value }: Props) {
         },
       ]}
     >
-      <Text style={[styles.value, { color: colors.primary }]}>
+      <Text
+        style={[
+          styles.value,
+          { color: colors.primary },
+        ]}
+      >
         {value}
       </Text>
 
-      <Text style={[styles.title, { color: colors.textSecondary }]}>
+      <Text
+        style={[
+          styles.title,
+          { color: colors.textSecondary },
+        ]}
+      >
         {title}
       </Text>
     </View>

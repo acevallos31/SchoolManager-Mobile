@@ -7,19 +7,30 @@ import {
   ScrollView,
 } from 'react-native';
 
-import { useTheme } from '../contexts/ThemeContext';
+import { getThemeColors } from '../store/slices/themeSlice';
 import CustomInput from '../components/CustomInput';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { addStudent, removeStudent } from '../store/slices/studentsSlice';
 import CustomButton from '../components/CustomButton';
 import * as Crypto from 'expo-crypto';
+import {
+  addResponsable,
+  removeResponsable,
+} from '../store/slices/responsablesSlice';
 
 export default function StudentsScreen() {
-  const { colors } = useTheme();
+  const isDark = useAppSelector(
+  (state) => state.theme.isDark
+);
+
+const colors = getThemeColors(isDark);
 
   const dispatch = useAppDispatch();
   const students = useAppSelector(
   (state) => state.students.students
+);
+const responsables = useAppSelector(
+  (state) => state.responsables.responsables
 );
 
   const [RNE, setRNE] = useState('');
@@ -30,7 +41,6 @@ export default function StudentsScreen() {
   const [numeroIdentificacion, setNumeroIdentificacion] = useState('');
   const [direccion, setDireccion] = useState('');
   
-
   const [responsableNombre, setResponsableNombre] = useState('');
   const [responsableApellido, setResponsableApellido] = useState('');
   const [telefono, setTelefono] = useState('');
@@ -40,38 +50,49 @@ export default function StudentsScreen() {
   const handleAddStudent = () => {
   if (!nombre.trim() || !apellido.trim()) return;
 
+  const alumnoId = Crypto.randomUUID();
+
   dispatch(
-  addStudent({
-    id: Crypto.randomUUID(),
-    institucionId: '',
-    nombres: nombre.trim(),
-    apellidos: apellido.trim(),
-    tipoIdentificacion: tipoIdentificacion.trim(),
-    numeroIdentificacion: numeroIdentificacion.trim(),
-    fechaNacimiento: fechaNacimiento.trim() || null,
-    rne: RNE.trim() || null,
-    codigoInterno: null,
-  })
-);
+    addStudent({
+      id: alumnoId,
+      institucionId: '',
+      nombres: nombre.trim(),
+      apellidos: apellido.trim(),
+      tipoIdentificacion: tipoIdentificacion.trim(),
+      numeroIdentificacion: numeroIdentificacion.trim(),
+      fechaNacimiento: fechaNacimiento.trim() || null,
+      rne: RNE.trim() || null,
+      codigoInterno: null,
+    })
+  );
 
- console.log('Alumno enviado a Redux:', {
-  nombres: nombre.trim(),
-  apellidos: apellido.trim(),
-  rne: RNE.trim() || null,
-});
-    setRNE('');
-    setNombre('');
-    setApellido('');
-    setTipoIdentificacion('');
-    setNumeroIdentificacion('');
-    setFechaNacimiento('');
-    setDireccion('');
+  dispatch(
+    addResponsable({
+      id: Crypto.randomUUID(),
+      alumnoId: alumnoId,
+      nombres: responsableNombre.trim(),
+      apellidos: responsableApellido.trim(),
+      telefono: telefono.trim(),
+      correo: correo.trim(),
+      parentesco: parentesco.trim(),
+    })
+  );
 
-    setResponsableNombre('');
-    setResponsableApellido('');
-    setTelefono('');
-    setCorreo('');
-    setParentesco('');
+  console.log('Alumno y responsable enviados a Redux');
+
+  setRNE('');
+  setNombre('');
+  setApellido('');
+  setTipoIdentificacion('');
+  setNumeroIdentificacion('');
+  setFechaNacimiento('');
+  setDireccion('');
+
+  setResponsableNombre('');
+  setResponsableApellido('');
+  setTelefono('');
+  setCorreo('');
+  setParentesco('');
 };
 
   return (
@@ -246,9 +267,19 @@ export default function StudentsScreen() {
     </Text>
   
     <CustomButton
-      title="Eliminar alumno"
-      onPress={() => dispatch(removeStudent(student.id))}
-    />
+  title="Eliminar alumno"
+  onPress={() => {
+    const responsable = responsables.find(
+      (item) => item.alumnoId === student.id
+    );
+
+    if (responsable) {
+      dispatch(removeResponsable(responsable.id));
+    }
+
+    dispatch(removeStudent(student.id));
+  }}
+/>
   </View>
 ))}
     </ScrollView>

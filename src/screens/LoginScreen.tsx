@@ -1,151 +1,65 @@
-import { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Alert,
-} from 'react-native';
-
+﻿import { useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
+import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 
-import { useAppDispatch } from '../store/hooks';
-import { setUser } from '../store/slices/userSlice';
-import { loginSchoolManager } from '../services/authService';
-
-type Props = {
-  navigation: any;
-};
-
-export default function LoginScreen({ navigation }: Props) {
-  const dispatch = useAppDispatch();
+export default function LoginScreen() {
+  const { login, logout, retry, error, canRetry } = useAuth();
+  const { colors } = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const validateEmail = (value: string) => {
-    const normalized = value.trim();
-    return normalized.includes('@') && normalized.includes('.');
-  };
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const handleLogin = async () => {
+    if (submitting) return;
     if (!email.trim() || !password) {
-      Alert.alert('Error', 'Todos los campos son obligatorios');
+      setFormError('Todos los campos son obligatorios.');
       return;
     }
-
-    if (!validateEmail(email)) {
-      Alert.alert('Error', 'Ingresa un correo electrónico válido');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setFormError('Introduce un correo electrónico válido.');
       return;
     }
-
-    setLoading(true);
-
+    setSubmitting(true);
+    setFormError(null);
     try {
-      const { accessToken, email: sessionEmail, perfil } =
-        await loginSchoolManager(email, password);
-
-      const institution =
-        perfil.instituciones?.find((item) => item.activo !== false) ||
-        perfil.institucionesAdministrables?.find(
-          (item) => item.activo !== false
-        );
-
-      const roles =
-        institution?.roles?.length
-          ? institution.roles
-          : perfil.roles?.length
-            ? perfil.roles
-            : perfil.ambitoGlobal?.roles || [];
-
-      dispatch(
-        setUser({
-          name: perfil.nombreCompleto || 'Usuario SchoolManager',
-          email: sessionEmail,
-          role: roles[0] || 'Usuario',
-          accessToken,
-          institutionId: institution?.id || '',
-          institutionName:
-            institution?.nombreCorto ||
-            institution?.nombre ||
-            'SchoolManager',
-        })
-      );
-
-      navigation.replace('MainTabs');
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : 'No fue posible iniciar sesión.';
-
-      Alert.alert('No se pudo iniciar sesión', message);
+      await login(email, password);
+    } catch (cause) {
+      setFormError(cause instanceof Error ? cause.message : 'No se pudo iniciar sesión.');
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>SchoolManager</Text>
-
-      <Text style={styles.subtitle}>Iniciar sesión</Text>
-
-      <CustomInput
-        placeholder="Correo electrónico"
-        value={email}
-        onChangeText={setEmail}
-        type="email"
-      />
-
-      <CustomInput
-        placeholder="Contraseña"
-        value={password}
-        onChangeText={setPassword}
-        type="password"
-      />
-
-      <CustomButton
-        title={loading ? 'Conectando...' : 'Ingresar'}
-        onPress={handleLogin}
-        variant="primary"
-        disabled={loading}
-      />
-
-      <Text style={styles.connectionHint}>
-        Supabase Auth + SchoolManager API .NET
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <Text style={[styles.title, { color: colors.primary }]}>SchoolManager</Text>
+      <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+        {canRetry ? 'Acceso pendiente de validación' : 'Iniciar sesión'}
       </Text>
+      {formError || error ? <Text accessibilityRole="alert" style={styles.error}>{formError || error}</Text> : null}
+      {canRetry ? (
+        <>
+          <CustomButton title="Reintentar validación" onPress={() => { void retry(); }} />
+          <CustomButton title="Cerrar sesión" onPress={() => { void logout(); }} variant="secondary" />
+        </>
+      ) : (
+        <>
+          <CustomInput placeholder="Correo electrónico" value={email} onChangeText={setEmail} type="email" />
+          <CustomInput placeholder="Contraseña" value={password} onChangeText={setPassword} type="password" />
+          <CustomButton title={submitting ? 'Ingresando…' : 'Ingresar'} onPress={handleLogin} disabled={submitting} />
+        </>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 25,
-    backgroundColor: '#FFFFFF',
-  },
-
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#1E3A8A',
-    marginBottom: 10,
-  },
-
-  subtitle: {
-    fontSize: 20,
-    textAlign: 'center',
-    color: '#475569',
-    marginBottom: 30,
-  },
-
-  connectionHint: {
-    marginTop: 16,
-    textAlign: 'center',
-    color: '#64748B',
-    fontSize: 12,
-  },
+  container: { flex: 1, justifyContent: 'center', paddingHorizontal: 25 },
+  title: { fontSize: 32, fontWeight: 'bold', textAlign: 'center', marginBottom: 10 },
+  subtitle: { fontSize: 20, textAlign: 'center', marginBottom: 30 },
+  error: { color: '#B91C1C', marginBottom: 16, textAlign: 'center' },
 });

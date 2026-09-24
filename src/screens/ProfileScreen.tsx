@@ -7,37 +7,18 @@ import {
 
 import { Ionicons } from '@expo/vector-icons';
 
-import { getThemeColors } from '../store/slices/themeSlice';
+import { useTheme } from '../contexts/ThemeContext';
 import CustomButton from '../components/CustomButton';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { clearUser } from '../store/slices/userSlice';
+import { useAppSelector } from '../store/hooks';
+import { useAuth } from '../contexts/AuthContext';
 
-type Props = {
-  navigation: any;
-};
-
-export default function ProfileScreen({
-  navigation,
-}: Props) {
- const dispatch = useAppDispatch();
-
-const user = useAppSelector((state) => state.user);
-
-const isDark = useAppSelector(
-  (state) => state.theme.isDark
-);
-
-const colors = getThemeColors(isDark);
+export default function ProfileScreen() {
+  const { logout } = useAuth();
+  const user = useAppSelector((state) => state.user);
+  const { colors } = useTheme();
 
   const handleLogout = () => {
-    dispatch(clearUser());
-
-    console.log('Usuario eliminado de Redux');
-
-    navigation.getParent()?.reset({
-      index: 0,
-      routes: [{ name: 'Login' }],
-    });
+    void logout();
   };
 
   return (

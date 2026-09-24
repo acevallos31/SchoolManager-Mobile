@@ -55,7 +55,9 @@ export default function CustomInput({
           onChangeText={onChangeText}
           keyboardType={getKeyboardType()}
           secureTextEntry={isPasswordField && isSecureText}
-          autoCapitalize={type === 'email' ? 'none' : 'sentences'}
+          autoCapitalize={type === 'email' || isPasswordField ? 'none' : 'sentences'}
+          autoCorrect={type !== 'email' && !isPasswordField}
+          accessibilityLabel={label || placeholder}
         />
 
         {isPasswordField && (

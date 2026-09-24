@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { UsuarioActual } from '../../services/authApi';
 
 type UserState = {
   name: string;
@@ -8,6 +9,7 @@ type UserState = {
   institutionId: string;
   institutionName: string;
   isAuthenticated: boolean;
+  profile: UsuarioActual | null;
 };
 
 const initialUserState: UserState = {
@@ -18,6 +20,7 @@ const initialUserState: UserState = {
   institutionId: '',
   institutionName: '',
   isAuthenticated: false,
+  profile: null,
 };
 
 const userSlice = createSlice({
@@ -30,29 +33,24 @@ const userSlice = createSlice({
         name: string;
         email: string;
         role: string;
-        accessToken: string;
-        institutionId: string;
-        institutionName: string;
+        profile: UsuarioActual;
+        accessToken?: string;
+        institutionId?: string;
+        institutionName?: string;
       }>
     ) => {
       state.name = action.payload.name;
       state.email = action.payload.email;
       state.role = action.payload.role;
-      state.accessToken = action.payload.accessToken;
-      state.institutionId = action.payload.institutionId;
-      state.institutionName = action.payload.institutionName;
+      state.accessToken = action.payload.accessToken ?? '';
+      state.institutionId = action.payload.institutionId ?? '';
+      state.institutionName = action.payload.institutionName ?? '';
       state.isAuthenticated = true;
+
+      state.profile = action.payload.profile;
     },
 
-    clearUser: (state) => {
-      state.name = '';
-      state.email = '';
-      state.role = '';
-      state.accessToken = '';
-      state.institutionId = '';
-      state.institutionName = '';
-      state.isAuthenticated = false;
-    },
+    clearUser: () => initialUserState,
   },
 });
 

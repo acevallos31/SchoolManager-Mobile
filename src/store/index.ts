@@ -4,12 +4,16 @@ import { clearUser } from './slices/userSlice';
 import userReducer from './slices/userSlice';
 import enrollmentReducer from './slices/enrollmentSlice';
 import studentsReducer from './slices/studentsSlice';
+import themeReducer from './slices/themeSlice';
+import responsablesReducer from './slices/responsablesSlice';
 
 
 const appReducer = combineReducers({
     user: userReducer,
     enrollment: enrollmentReducer,
     students: studentsReducer,
+    theme: themeReducer,
+    responsables: responsablesReducer,
 });
 
 export const store = configureStore({
